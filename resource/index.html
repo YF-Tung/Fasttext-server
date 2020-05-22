@@ -1,0 +1,36 @@
+<html><head><title>Word Similarity Query</title></head><body align='center'>
+<h2>Word Similarity Query</h2>
+<input type='text' id='query_input' />
+<a href='#' id = 'link'>Query</a>
+<p id='label'></p>
+</body>
+<script>
+
+const textInput = document.getElementById('query_input');
+const linkLabel = document.getElementById('link');
+const label = document.getElementById('label');
+
+const onTextChange = function(txt) {
+    const query_arg = txt.split(/[\s,]/)
+        .map(x => x.trim())
+        .filter(x => x != '')
+        .join(',');
+    const uri = '/?q=' + query_arg;
+    const encoded = encodeURI(uri);
+    label.innerHTML = encoded;
+    linkLabel.href = encoded;
+}
+
+const textInputHandler = function(e) {
+    onTextChange(e.target.value);
+}
+textInput.addEventListener('input', textInputHandler);
+textInput.addEventListener('propertychange', textInputHandler);  // IE8
+
+document.addEventListener('DOMContentLoaded', function(e) {
+    const txt = textInput.value;
+    onTextChange(txt);
+});
+
+</script>
+</html>

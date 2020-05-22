@@ -7,24 +7,31 @@ from FastTextWrapper import FastTextWrapper
 
 class HttpRequestHandler(BaseHTTPRequestHandler):
     def __init__(self, *argv, **kwargs):
+        self.resource = self.prepare_resource()
         self.fast_text = FastTextWrapper.get_instance()
         super(HttpRequestHandler, self).__init__(*argv, **kwargs)
         print('Handler started')
+
+    @staticmethod
+    def prepare_resource():
+        mapping = {
+            'index': 'resource/index.html'
+        }
+        rv = {}
+        for k, v in mapping.items():
+            with open(v) as fin:
+                rv[k] = fin.read()
+        return rv
 
     def do_GET(self):
         try:
             query = urlparse(self.path).query
             query = unquote(query)
-            print(query)
             q = parse_qs(query)['q']
-            print(q)
             query_words = ' '.join(q).split(',')
-            print(query_words)
-
-            res = self.fast_text.query_similarity(query_words)
+            res = self.fast_text.query(query_words)
         except KeyError:
-            res = ''
-        print(res)
+            res = self.resource['index']
         res_byte = res.encode('UTF-8')
         self.send_response(HTTPStatus.OK)
 

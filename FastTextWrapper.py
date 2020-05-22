@@ -13,10 +13,19 @@ class FastTextWrapper:
         self.model = fasttext.load_model('cc.zh.300.bin')
         print('FastText loaded')
 
-    def query_similarity(self, words):
+    def query(self, words):
         """Returns plain text result."""
-        if len(words) <= 1:
-            return "Expected two words or more. {} word found.".format(len(words))
+        if len(words) == 0:
+            raise KeyError
+        elif len(words) == 1:
+            return self.query_embedding(words[0])
+        else:
+            return self.query_similarity(words)
+
+    def query_embedding(self, word):
+        return self.model.get_word_vector(word)
+
+    def query_similarity(self, words):
 
         words = list(set(words))
         embedding = {}
