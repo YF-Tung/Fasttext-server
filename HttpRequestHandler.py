@@ -25,11 +25,10 @@ class HttpRequestHandler(BaseHTTPRequestHandler):
         except KeyError:
             res = ''
         print(res)
-        res_byte = res.encode('utf-8')
+        res_byte = res.encode('UTF-8')
         self.send_response(HTTPStatus.OK)
 
-        self.send_header('charset', 'utf-8')
-        self.send_header('Content-type', 'text/plain')
+        self.send_header('Content-type', 'text/html; charset=utf-8')
         self.send_header('Content-Length', str(len(res_byte)))
         self.end_headers()
         self.wfile.write(res_byte)
